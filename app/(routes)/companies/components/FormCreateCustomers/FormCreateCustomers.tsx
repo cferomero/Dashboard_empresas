@@ -10,14 +10,13 @@ import { Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessa
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { FormCreateCustomersProps } from "./FormCreateCustomers.types"
+import { UploadButton } from "@/utils/uploadthing"
 
 
 // Defino los valores y los campos y le establexco 
 // un mensaje de error al input con ZOD
 const formSchema = z.object({
-    name: z.string().min(2, {
-        message: "¡El nombre de la compañia es muy corto!"
-    }),
+    name: z.string(),
     country: z.string().min(2),
     website: z.string().min(2),
     phone: z.string().min(10),
@@ -30,7 +29,7 @@ const formSchema = z.object({
 export function FormCreateCustomers(props: FormCreateCustomersProps) {
     // Definiendo los estados de las propiedades del formulario
     const { setOpenModalCreate } = props; // Creando un destructuring de las props
-    const [photoUploaded, setPhotoUplloaded] = useState(false);
+    const [photoUploaded, setPhotoUploaded] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -139,7 +138,14 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
                                 <FormItem>
                                     <FormLabel>Profile Image</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="1234567-9" type="text" {...field} />
+                                        <UploadButton
+                                            className="bg-slate-600/20 text-slate-800 rounded-lg outline-dotted outline-3"
+                                            endpoint="profileImage"
+                                            onClientUploadComplete={(res) => {
+                                                form.setValue("profileImage", res?.[0].url)
+                                                setPhotoUploaded(true)
+                                            }}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
