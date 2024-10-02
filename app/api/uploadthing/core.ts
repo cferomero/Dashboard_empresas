@@ -3,12 +3,9 @@
 
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { auth } from "@clerk/nextjs";
-import { UploadThingError } from "uploadthing/server";
-
 
 // Constante para crear el upload
 const f = createUploadthing();
-
 
 // Aqui validamos si no existe ningun usuario
 const handleAuth = () => {

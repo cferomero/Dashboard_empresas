@@ -1,16 +1,20 @@
 // Componente formulario para el registro de empresas
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { useState } from "react"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { FormCreateCustomersProps } from "./FormCreateCustomers.types"
-import { UploadButton } from "@/utils/uploadthing"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { FormCreateCustomersProps } from "./FormCreateCustomers.types";
+import { UploadButton } from "@/utils/uploadthing";
+// countries
+import { countries, ICountry } from 'countries-list';
+import { EmojiFlags } from "@/utils/emojiFlags";
+import { Toast } from "@/components/ui/toast";
 
 
 // Defino los valores y los campos y le establexco 
@@ -30,6 +34,10 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
     // Definiendo los estados de las propiedades del formulario
     const { setOpenModalCreate } = props; // Creando un destructuring de las props
     const [photoUploaded, setPhotoUploaded] = useState(false);
+    // Countries
+    // Conversión del objeto a array
+    const countryList = Object.entries(countries) as [string, ICountry][];
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -83,9 +91,14 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                           <SelectItem value="colombia">Colombia</SelectItem>
-                                           <SelectItem value="peru">Perú</SelectItem>
-                                           <SelectItem value="chile">Chile</SelectItem>
+                                            {countryList.map(([code,country]) => (
+                                                <SelectItem 
+                                                    key={code} 
+                                                    value={code}
+                                                >
+                                                    {EmojiFlags(code)} {country.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -138,21 +151,34 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
                                 <FormItem>
                                     <FormLabel>Profile Image</FormLabel>
                                     <FormControl>
-                                        <UploadButton
-                                            className="bg-slate-600/20 text-slate-800 rounded-lg outline-dotted outline-3"
-                                            endpoint="profileImage"
-                                            onClientUploadComplete={(res) => {
-                                                form.setValue("profileImage", res?.[0].url)
-                                                setPhotoUploaded(true)
-                                            }}
-                                        />
+                                        {photoUploaded ? (
+                                            <p className="text-center font-semibold text-sm">Image uploaded</p>
+                                        ) : (
+                                            <UploadButton
+                                                className="bg-slate-600/20 text-slate-800 rounded-lg outline-dotted outline-3"
+                                                {...field}
+                                                endpoint="profileImage"
+                                                onClientUploadComplete={(res) => {
+                                                    form.setValue("profileImage", res?.[0].url)
+                                                    Toast({
+                                                        title: "Image uploaded"
+                                                    })
+                                                    setPhotoUploaded(true)
+                                                }}
+                                                onUploadError={(error: Error) => {
+                                                    Toast({
+                                                        title: "Error uploading image"
+                                                    })
+                                                }}
+                                            />
+                                        )}
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
-                    <Button type="submit">Create</Button>
+                    <Button type="submit" disabled={!isValid}>Create</Button>
                 </form>
             </Form>
         </div>
