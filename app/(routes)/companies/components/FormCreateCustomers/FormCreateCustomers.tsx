@@ -6,15 +6,19 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessage } from "@/components/ui/form";
+import { Form,FormControl,FormField,FormItem,FormLabel,FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { FormCreateCustomersProps } from "./FormCreateCustomers.types";
 import { UploadButton } from "@/utils/uploadthing";
+// router
+import { useRouter } from "next/navigation";
+// axios
+import axios from "axios";
 // countries
 import { countries, ICountry } from 'countries-list';
 import { EmojiFlags } from "@/utils/emojiFlags";
-import { Toast } from "@/components/ui/toast";
+import { toast } from "@/hooks/use-toast";
 
 
 // Defino los valores y los campos y le establexco 
@@ -33,6 +37,7 @@ const formSchema = z.object({
 export function FormCreateCustomers(props: FormCreateCustomersProps) {
     // Definiendo los estados de las propiedades del formulario
     const { setOpenModalCreate } = props; // Creando un destructuring de las props
+    const router = useRouter();
     const [photoUploaded, setPhotoUploaded] = useState(false);
     // Countries
     // Conversión del objeto a array
@@ -54,8 +59,20 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
     const { isValid } = form.formState // validando el formulario
      
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values)
+        try{
+            // Cuando creemos la empresa. Refrescamos la pag con router.rfresh() y cerramos el form.
+            axios.post("/api/company", values) // Pasamos la ruta del endpoint con axios POST. Y los VALUES     ue recibimos atraves del onSubmit
+            toast({title: 'Company created'})
+            router.refresh()
+            setOpenModalCreate(false)
+        } catch (error) {
+            toast({
+                title: 'Something went wrong',
+                variant: 'destructive'
+            })
+        }
     }
+
     return (
         <div>
             <Form {...form}>
@@ -160,13 +177,13 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
                                                 endpoint="profileImage"
                                                 onClientUploadComplete={(res) => {
                                                     form.setValue("profileImage", res?.[0].url)
-                                                    Toast({
+                                                    toast({ // Mostrando el mensaje cuando se carga la foto
                                                         title: "Image uploaded"
                                                     })
                                                     setPhotoUploaded(true)
                                                 }}
                                                 onUploadError={(error: Error) => {
-                                                    Toast({
+                                                    toast({ // Mostrando el mensaje cuando hay error para cargar la foto
                                                         title: "Error uploading image"
                                                     })
                                                 }}
