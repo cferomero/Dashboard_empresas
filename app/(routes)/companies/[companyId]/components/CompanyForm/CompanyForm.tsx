@@ -84,7 +84,7 @@ export function CompanyForm(props: CompanyFormProps) {
                             <FormItem>
                                 <FormLabel>Name company</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Name Company" readOnly type="text" {...field}/>
+                                    <Input placeholder="Name Company" type="text" {...field}/>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

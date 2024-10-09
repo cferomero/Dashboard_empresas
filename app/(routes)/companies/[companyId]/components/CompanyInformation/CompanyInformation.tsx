@@ -2,6 +2,8 @@ import Image from "next/image";
 import { CompanyInformationProps } from "./CompanyInformation.types";
 import { User } from "lucide-react";
 import { CompanyForm } from "../CompanyForm";
+import { NewContact } from "../NewContact";
+import { ListContacts } from "../ListContacts";
 // import { db } from "@/lib/bd";
 
 export function CompanyInformation(props: CompanyInformationProps) {
@@ -25,10 +27,10 @@ export function CompanyInformation(props: CompanyInformationProps) {
                     </div>
                     <div>
                         {/* TODO: new contact */}
-                        <p>New contact</p>
+                        <NewContact />
                     </div>
                 </div>
-                <p>List contacts</p>
+                <ListContacts company={company} />
             </div>
         </div>
     )
