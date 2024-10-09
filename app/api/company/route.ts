@@ -2,6 +2,8 @@
 // y cargar los datos desde aqui
 // hacia nuestra base de datos. Creando los endpoints
 
+// Crear empresa y }eliinar empresa
+
 
 import { db } from '@/lib/bd';
 import { auth } from '@clerk/nextjs';
