@@ -19,6 +19,7 @@ export function FooterCompany(props: FooterCompanyProps) {
             axios.delete(`/api/company/${companyId}`)
             toast({title: "Company deleted"})
             router.push("/companies")
+            router.refresh()
         } catch(error) {
             toast({
                 title: "Something went wrong",
