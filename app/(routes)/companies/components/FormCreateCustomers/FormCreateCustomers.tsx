@@ -113,8 +113,7 @@ export function FormCreateCustomers(props: FormCreateCustomersProps) {
                                                     key={code} 
                                                     value={code}
                                                 >
-                                                    {EmojiFlags(code)} 
-                                                    {country.name}
+                                                    {EmojiFlags(code)} {country.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
