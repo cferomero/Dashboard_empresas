@@ -5,7 +5,7 @@ import { TotalSubscribers } from "./components/TotalSubscribers";
 import { ListIntegrations } from "./components/ListIntegrations";
 import { BookOpenCheck, UsersRound, Waypoints } from "lucide-react";
 
-export const dataCardsSummary = [
+const dataCardsSummary = [
   {
     icon: UsersRound,
     total:"12.450",
